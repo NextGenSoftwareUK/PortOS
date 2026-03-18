@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LFG PORT OS — Intelligence Terminal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+<script src="https://unpkg.com/globe.gl@2.33.0"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#020408;--panel:rgba(6,14,22,0.82);--glass:rgba(10,20,32,0.55);
+  --border:rgba(100,240,200,0.12);--border-bright:rgba(100,240,200,0.3);
+  --text:#e8f4f0;--dim:#6a8a82;--accent:#64f0c8;--accent2:#44ccff;
+  --warn:#ffb84c;--danger:#ff5f63;--mono:'IBM Plex Mono',monospace;--sans:'Space Grotesk',sans-serif;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);overflow-x:hidden}
+.bg-grid{position:fixed;inset:0;pointer-events:none;opacity:0;
+  background-image:linear-gradient(rgba(100,240,200,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(100,240,200,0.03) 1px,transparent 1px);
+  background-size:60px 60px;mask-image:radial-gradient(ellipse at 50% 30%,black 20%,transparent 70%)}
+.bg-radial{position:fixed;inset:0;pointer-events:none;opacity:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(40,120,100,0.15),transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(40,100,180,0.08),transparent 40%)}
+.scanline{position:fixed;inset:0;pointer-events:none;overflow:hidden;opacity:0}
+.scanline::after{content:'';position:absolute;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,rgba(100,240,200,0.12),transparent);animation:scanMove 4s linear infinite}
+@keyframes scanMove{0%{top:-2px}100%{top:100%}}
+#boot{position:fixed;inset:0;z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg)}
+.logo-ring{width:120px;height:120px;border:2px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;opacity:0;flex-direction:column;gap:4px}
+.logo-ring::before{content:'';position:absolute;inset:-8px;border:1px solid var(--border);border-radius:50%;border-top-color:var(--accent);animation:spin 2s linear infinite}
+.logo-ring::after{content:'';position:absolute;inset:-16px;border:1px solid rgba(100,240,200,0.06);border-radius:50%;border-bottom-color:rgba(100,240,200,0.15);animation:spin 3s linear infinite reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+.logo-text{font-family:var(--mono);font-size:14px;font-weight:700;letter-spacing:0.18em;color:var(--accent);line-height:1.2;text-align:center}
+#bootLines{margin-top:32px;font-family:var(--mono);font-size:12px;color:var(--dim);text-align:left;line-height:2;min-width:360px;opacity:0}
+#bootLines .ok{color:var(--accent)}
+#bootLines .count{color:var(--accent);font-weight:600}
+#bootFinal{margin-top:24px;font-family:var(--mono);font-size:14px;font-weight:600;color:var(--accent);letter-spacing:0.15em;opacity:0}
+#main{opacity:0;min-height:100vh;position:relative;padding:10px 12px}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border:1px solid var(--border);background:var(--panel);backdrop-filter:blur(20px);flex-wrap:wrap;gap:10px}
+.top-left{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-family:var(--mono);font-weight:700;font-size:14px;letter-spacing:0.1em;text-transform:uppercase}
+.regime-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;border:1px solid rgba(100,240,200,0.35);color:#c8f0e8;background:rgba(100,240,200,0.06)}
+.regime-chip .blink{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);animation:pulse-blink 1.5s ease-in-out infinite}
+@keyframes pulse-blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.top-center{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.region-btn{border:1px solid var(--border);background:rgba(255,255,255,0.02);color:var(--dim);font-family:var(--mono);font-size:10px;padding:6px 10px;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;transition:all 0.2s}
+.region-btn:hover{border-color:var(--accent);color:var(--text)}
+.region-btn.active{color:#03140d;background:var(--accent);border-color:var(--accent)}
+.top-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.meta-pill{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:0.06em;padding:5px 10px;border:1px solid var(--border)}
+.meta-pill .v{color:var(--text);font-weight:500}
+.alert-badge{padding:5px 12px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;border:1px solid rgba(100,240,200,0.4);color:var(--accent);background:linear-gradient(135deg,rgba(100,240,200,0.12),rgba(100,240,200,0.04))}
+.alert-badge.hot{border-color:rgba(255,95,99,0.5);color:#fff;background:linear-gradient(135deg,rgba(255,95,99,0.25),rgba(255,95,99,0.08))}
+.grid{display:grid;grid-template-columns:260px 1fr 320px;gap:10px;margin-top:10px;min-height:calc(100vh - 100px)}
+.col{display:flex;flex-direction:column;gap:10px}
+.g-panel{border:1px solid var(--border);background:var(--glass);backdrop-filter:blur(16px);padding:12px;position:relative;overflow:hidden}
+.g-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(100,240,200,0.15),transparent);pointer-events:none}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sec-head h3{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--dim)}
+.badge{font-family:var(--mono);font-size:10px;padding:2px 7px;border:1px solid var(--border);color:var(--accent)}
+.layer-item{display:flex;align-items:center;justify-content:space-between;padding:8px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02);margin-bottom:4px}
+.layer-left{display:flex;align-items:center;gap:8px}
+.ldot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.ldot.air{background:var(--accent);box-shadow:0 0 6px rgba(100,240,200,0.4)}
+.ldot.thermal{background:var(--danger);box-shadow:0 0 6px rgba(255,95,99,0.4)}
+.ldot.sdr{background:var(--accent2);box-shadow:0 0 6px rgba(68,204,255,0.4)}
+.ldot.nuke{background:#ffe082;box-shadow:0 0 6px rgba(255,224,130,0.4)}
+.ldot.incident{background:var(--warn);box-shadow:0 0 6px rgba(255,184,76,0.4)}
+.ldot.maritime{background:#b388ff;box-shadow:0 0 6px rgba(179,136,255,0.4)}
+.ldot.health{background:#69f0ae;box-shadow:0 0 6px rgba(105,240,174,0.4)}
+.ldot.news{background:#81d4fa;box-shadow:0 0 6px rgba(129,212,250,0.4)}
+.ldot.space{background:#e0b0ff;box-shadow:0 0 6px rgba(224,176,255,0.4)}
+.layer-name{font-size:12px;font-weight:500}
+.layer-sub{font-size:10px;color:var(--dim);max-width:140px}
+.layer-count{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--accent);text-align:right;max-width:90px}
+.econ-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:11px}
+.econ-row .elabel{color:var(--dim)}
+.econ-row .eval{font-family:var(--mono);font-weight:600}
+.map-container{flex:1;min-height:520px;border:1px solid var(--border);background:radial-gradient(ellipse at center,rgba(4,12,20,1),rgba(2,4,8,1));position:relative;overflow:hidden}
+#globeViz{width:100%;height:100%;cursor:grab}
+#globeViz:active{cursor:grabbing}
+.map-legend{position:absolute;bottom:10px;left:12px;display:flex;gap:12px;font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:0.06em;text-transform:uppercase;z-index:5;flex-wrap:wrap}
+.leg-item{display:flex;align-items:center;gap:5px}
+.leg-dot{width:8px;height:8px;border-radius:50%}
+.map-hint{position:absolute;top:8px;right:12px;font-family:var(--mono);font-size:9px;color:var(--dim);z-index:5;opacity:0.6}
+.map-controls{position:absolute;top:8px;left:12px;z-index:6;display:flex;flex-direction:column;gap:4px}
+.map-ctrl-btn{width:28px;height:28px;border:1px solid var(--border);background:rgba(0,0,0,0.6);color:var(--dim);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:all 0.2s;font-family:var(--mono)}
+.map-ctrl-btn:hover{color:var(--accent);border-color:var(--border-bright)}
+.proj-toggle{position:absolute;top:8px;left:48px;z-index:6;padding:5px 10px;border:1px solid var(--border);background:rgba(0,0,0,0.6);font-family:var(--mono);font-size:9px;cursor:pointer;color:var(--accent);letter-spacing:0.08em;text-transform:uppercase;backdrop-filter:blur(8px)}
+#globeViz .scene-tooltip{font-family:var(--mono)!important;font-size:10px!important;background:rgba(6,10,14,0.9)!important;border:1px solid rgba(100,240,200,0.3)!important;color:var(--text)!important}
+.lower{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;align-items:flex-start}
+.lower .lp-delta{flex:1 1 280px;max-width:340px}
+.lower .lp-macro{flex:2.5 1 400px}
+.metrics-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:6px}
+.mc{padding:10px;border:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.02)}
+.mc .ml{font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:0.08em;color:var(--dim)}
+.mc .mv{font-family:var(--mono);font-size:16px;font-weight:600;margin-top:6px;display:block}
+.mc .ms{font-family:var(--mono);font-size:8px;color:var(--dim);margin-top:4px}
+.mc .mbar{height:3px;margin-top:8px;background:rgba(255,255,255,0.06);border-radius:1px;overflow:hidden}
+.mc .mbar span{display:block;height:100%;border-radius:1px;background:linear-gradient(90deg,rgba(68,204,255,0.4),var(--accent))}
+.signal-row{padding:8px 10px;border-left:2px solid rgba(100,240,200,0.25);margin-bottom:4px;background:rgba(255,255,255,0.02)}
+.signal-row strong{font-family:var(--mono);font-size:10px;color:var(--accent)}
+.signal-row p{font-size:11px;color:#c8d8d2;margin-top:4px;line-height:1.35}
+.feed{flex:1;overflow-y:auto;max-height:calc(100vh - 140px);padding-right:3px}
+.feed::-webkit-scrollbar{width:3px}
+.feed::-webkit-scrollbar-thumb{background:rgba(100,240,200,0.2);border-radius:2px}
+.ic{padding:10px;border:1px solid rgba(255,255,255,0.05);border-left:2px solid rgba(68,204,255,0.4);background:rgba(255,255,255,0.02);margin-bottom:6px}
+.ic.urgent{border-left-color:var(--danger)}
+.ic.flash{border-left-color:var(--danger);background:rgba(255,95,99,0.05)}
+.ic .ic-ch{font-family:var(--mono);font-size:9px;font-weight:600;color:var(--accent);letter-spacing:0.08em;text-transform:uppercase;display:flex;justify-content:space-between}
+.ic .ic-v{color:var(--warn);font-size:9px;padding:1px 5px;border:1px solid rgba(255,184,76,0.3)}
+.ic .ic-t{font-size:11px;line-height:1.4;color:#c8d8d2;margin-top:4px}
+.src-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.src-item{display:flex;align-items:center;gap:4px;padding:5px 6px;border:1px solid rgba(255,255,255,0.04);font-size:10px;font-family:var(--mono)}
+.sd{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.sd.ok{background:var(--accent);box-shadow:0 0 4px rgba(100,240,200,0.4)}
+.sd.err{background:var(--danger)}
+.classic-link{font-family:var(--mono);font-size:9px;color:var(--dim);margin-left:8px}
+.classic-link a{color:var(--accent2)}
+@media(max-width:1200px){.grid{grid-template-columns:1fr}.feed{max-height:400px}}
+</style>
+</head>
+<body>
+<div id="boot">
+  <div class="logo-ring">
+    <span class="logo-text">LFG</span>
+    <span class="logo-text" style="font-size:11px;letter-spacing:0.25em">PORT OS</span>
+  </div>
+  <div id="bootLines"></div>
+  <div id="bootFinal">TERMINAL ACTIVE</div>
+</div>
+<div class="bg-radial" id="bgRadial"></div>
+<div class="bg-grid" id="bgGrid"></div>
+<div class="scanline" id="scanline"></div>
+<div id="main">
+  <div class="topbar" id="topbar"></div>
+  <div class="grid">
+    <div class="col" id="leftRail"></div>
+    <div class="col" id="centerCol">
+      <div class="map-container" id="mapContainer">
+        <div id="globeViz"></div>
+        <div class="map-controls">
+          <button type="button" class="map-ctrl-btn" onclick="mapZoom(0.82)" title="Zoom in">+</button>
+          <button type="button" class="map-ctrl-btn" onclick="mapZoom(1.18)" title="Zoom out">&minus;</button>
+        </div>
+        <button type="button" class="proj-toggle" onclick="triggerSweep()">SWEEP NOW</button>
+        <div class="map-hint">SCROLL · DRAG · DBL-CLICK CYCLES POV</div>
+        <div class="map-legend" id="mapLegend"></div>
+      </div>
+      <div class="lower" id="lowerGrid"></div>
+    </div>
+    <div class="col" id="rightRail"></div>
+  </div>
+  <p style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:12px;opacity:0.7">
+    Crucix-style HUD · mock telemetry · <a href="/index-classic.html" style="color:var(--accent2)">classic grid UI</a>
+  </p>
+</div>
+<script>
+let D = null;
+let globe = null;
+let currentRole = new URLSearchParams(location.search).get('role') || 'authority';
+let mapRegion = 'gulf';
+let booted = false;
+
+const DOMAIN_ORDER = ['berth','hinterland','pre_gate','gate','yard','customs','revenue','security','pcs','intel'];
+const DOMAIN_DOT = {
+  berth:'maritime', hinterland:'news', pre_gate:'incident', gate:'air', yard:'maritime',
+  customs:'thermal', revenue:'health', security:'nuke', pcs:'sdr', intel:'space'
+};
+const regionPOV = {
+  gulf: { lat: 10, lng: -6, altitude: 1.35 },
+  abidjan: { lat: 6.2, lng: -4.5, altitude: 0.42 },
+  sanpedro: { lat: 5.8, lng: -7.2, altitude: 0.48 }
+};
+
+function fmtVal(v, unit) {
+  if (typeof v !== 'number') return String(v);
+  if (unit === 'XOF' || v > 1e6) return new Intl.NumberFormat('fr-CI').format(v);
+  return String(v);
+}
+
+function setRole(r) {
+  currentRole = r;
+  const u = new URL(location.href);
+  u.searchParams.set('role', r);
+  history.replaceState({}, '', u);
+  loadData(true);
+}
+
+function renderTopbar() {
+  const m = D.meta;
+  const ts = new Date(m.generatedAt);
+  const hot = (D.alerts || []).some(a => a.tier === 'PRIORITY' || a.tier === 'FLASH');
+  document.getElementById('topbar').innerHTML = `
+    <div class="top-left">
+      <span class="brand">LFG PORT OS</span>
+      <span class="regime-chip"><span class="blink"></span>SYSTEM 08 · LIVE</span>
+      <span class="classic-link"><a href="/export/brief.html?role=${currentRole}" target="_blank" rel="noopener">BRIEF</a></span>
+    </div>
+    <div class="top-center">
+      ${['authority','customs','forwarder','terminal'].map(r =>
+        `<button type="button" class="region-btn ${r===currentRole?'active':''}" onclick="setRole('${r}')">${r}</button>`
+      ).join('')}
+    </div>
+    <div class="top-right">
+      <span class="meta-pill">SWEEP <span class="v">${(m.sweepId||'').slice(0,8)}</span></span>
+      <span class="meta-pill">SRC <span class="v">${m.sourcesOk}/${m.sourcesOk + (m.sourcesFailed||0)}</span></span>
+      <span class="meta-pill">${ts.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span>
+      <span class="alert-badge ${hot?'hot':''}">${hot ? 'ALERT' : 'NOMINAL'}</span>
+    </div>`;
+}
+
+function renderLeftRail() {
+  const layers = [];
+  for (const key of DOMAIN_ORDER) {
+    const b = D.domains[key];
+    if (!b || !b.kpis || !b.kpis.length) continue;
+    const k0 = b.kpis[0];
+    const sub = b.kpis.slice(1, 3).map(k => k.label + ' ' + fmtVal(k.value, k.unit)).join(' · ');
+    layers.push({
+      name: b.label || key,
+      count: fmtVal(k0.value, k0.unit) + (k0.unit && k0.unit !== 'XOF' ? ' ' + k0.unit : ''),
+      sub: sub || (b.kpis.length + ' KPIs'),
+      dot: DOMAIN_DOT[key] || 'air'
+    });
+  }
+  const g = D.domains.gate?.kpis?.find(x => x.id === 'trucks_per_hr');
+  const y = D.domains.yard?.kpis?.find(x => x.id === 'fill_pct');
+  const c = D.domains.customs?.kpis?.find(x => x.id === 'green_pct');
+  document.getElementById('leftRail').innerHTML = `
+    <div class="g-panel">
+      <div class="sec-head"><h3>Domain telemetry</h3><span class="badge">LIVE</span></div>
+      ${layers.map(l => `<div class="layer-item"><div class="layer-left"><div class="ldot ${l.dot}"></div><div><div class="layer-name">${l.name}</div><div class="layer-sub">${l.sub}</div></div></div><div class="layer-count">${l.count}</div></div>`).join('')}
+    </div>
+    <div class="g-panel">
+      <div class="sec-head"><h3>Throughput pulse</h3><span class="badge">GATE</span></div>
+      <div class="econ-row"><span class="elabel">Trucks / hr</span><span class="eval" style="color:var(--accent)">${g ? g.value : '—'}</span></div>
+      <div class="econ-row"><span class="elabel">Yard fill</span><span class="eval">${y ? y.value + '%' : '—'}</span></div>
+      <div class="econ-row"><span class="elabel">Customs GREEN</span><span class="eval" style="color:${c && c.value>50?'var(--accent)':'var(--warn)'}">${c ? c.value + '%' : '—'}</span></div>
+    </div>
+    <div class="g-panel">
+      <div class="sec-head"><h3>Source mesh</h3><span class="badge">OK</span></div>
+      <div class="src-grid">
+        ${DOMAIN_ORDER.filter(k => D.domains[k]).map(k => `<div class="src-item"><span class="sd ok"></span>${k}</div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function renderLower() {
+  const cards = [];
+  for (const key of DOMAIN_ORDER) {
+    const b = D.domains[key];
+    if (!b || !b.kpis) continue;
+    for (const k of b.kpis) {
+      const pct = k.unit === '%' ? Math.min(100, Math.max(0, Number(k.value) || 0)) : null;
+      const barW = pct != null ? pct : (typeof k.value === 'number' && k.value < 200 ? k.value / 2 : 50);
+      cards.push(`<div class="mc">
+        <span class="ml">${(b.label||key).slice(0,18)} · ${k.label}</span>
+        <span class="mv">${fmtVal(k.value, k.unit)}${k.unit && k.unit !== 'XOF' && !String(fmtVal(k.value)).includes(k.unit) ? ' ' + k.unit : ''}</span>
+        <div class="mbar"><span style="width:${Math.min(100, barW)}%"></span></div>
+      </div>`);
+    }
+  }
+  const ch = (D.delta && D.delta.changes) ? D.delta.changes.slice(0, 12) : [];
+  const deltaHtml = ch.length
+    ? ch.map(c => `<div class="signal-row"><strong>${c.label}</strong><p>${c.from} → ${c.to} ${c.unit || ''}</p></div>`).join('')
+    : `<div class="signal-row"><strong>Stable</strong><p>${(D.delta && D.delta.summary) || 'No delta yet.'}</p></div>`;
+  document.getElementById('lowerGrid').innerHTML = `
+    <div class="g-panel lp-delta">
+      <div class="sec-head"><h3>Sweep delta</h3><span class="badge">Δ</span></div>
+      ${deltaHtml}
+    </div>
+    <div class="g-panel lp-macro">
+      <div class="sec-head"><h3>Operational metrics</h3><span class="badge">KPI</span></div>
+      <div class="metrics-row">${cards.join('')}</div>
+    </div>`;
+}
+
+function renderRight() {
+  const alerts = D.alerts && D.alerts.length ? D.alerts : [{ tier: 'ROUTINE', message: 'No active alerts.', domain: 'intel' }];
+  document.getElementById('rightRail').innerHTML = `
+    <div class="g-panel" style="flex:1;display:flex;flex-direction:column;min-height:200px">
+      <div class="sec-head"><h3>Alert stream</h3><span class="badge">FEED</span></div>
+      <div class="feed">
+        ${alerts.map(a => {
+          const u = a.tier === 'FLASH' || a.tier === 'PRIORITY';
+          return `<div class="ic ${u?'urgent':''} ${a.tier==='FLASH'?'flash':''}">
+            <div class="ic-ch"><span>${a.domain || 'PORT'}</span><span class="ic-v">${a.tier}</span></div>
+            <div class="ic-t">${a.message}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+}
+
+function plotGlobeData() {
+  if (!globe) return;
+  const pts = [
+    { lat: 5.36, lng: -4.008, size: 0.55, color: 'rgba(100,240,200,0.95)', label: 'PAA · Abidjan' },
+    { lat: 4.751, lng: -6.636, size: 0.45, color: 'rgba(68,204,255,0.9)', label: 'San Pedro' },
+    { lat: 7.4, lng: -5.2, size: 0.35, color: 'rgba(255,184,76,0.85)', label: 'Hinterland' }
+  ];
+  globe
+    .pointsData(pts)
+    .pointAltitude(0.022)
+    .pointRadius(d => d.size)
+    .pointColor(d => d.color)
+    .pointLabel(d => `<b style="color:#64f0c8">${d.label}</b>`);
+  const arcs = [
+    { startLat: 7.4, startLng: -5.2, endLat: 5.36, endLng: -4.008, color: ['rgba(100,240,200,0.45)', 'rgba(100,240,200,0.06)'] },
+    { startLat: 6.5, startLng: -7, endLat: 4.751, endLng: -6.636, color: ['rgba(68,204,255,0.4)', 'rgba(68,204,255,0.06)'] }
+  ];
+  globe
+    .arcsData(arcs)
+    .arcColor(d => d.color)
+    .arcDashLength(0.35)
+    .arcDashGap(0.12)
+    .arcDashAnimateTime(2200)
+    .arcStroke(0.4)
+    .arcAltitudeAutoScale(0.28);
+  document.getElementById('mapLegend').innerHTML = [
+    ['#64f0c8', 'Abidjan'],
+    ['#44ccff', 'San Pedro'],
+    ['#ffb84c', 'Hinterland'],
+    ['rgba(100,240,200,0.5)', 'Hinterland arcs']
+  ].map(([c, l]) => `<div class="leg-item"><div class="leg-dot" style="background:${c}"></div>${l}</div>`).join('');
+}
+
+function initGlobe() {
+  const c = document.getElementById('mapContainer');
+  const w = c.clientWidth, h = c.clientHeight || 520;
+  globe = Globe()(document.getElementById('globeViz'))
+    .width(w).height(h)
+    .globeImageUrl('//unpkg.com/three-globe@2.33.0/example/img/earth-night.jpg')
+    .bumpImageUrl('//unpkg.com/three-globe@2.33.0/example/img/earth-topology.png')
+    .backgroundColor('rgba(0,0,0,0)')
+    .atmosphereColor('#64f0c8').atmosphereAltitude(0.18).showGraticules(true);
+  const scene = globe.scene();
+  const renderer = globe.renderer();
+  renderer.setClearColor(0x000000, 0);
+  const starGeom = new THREE.BufferGeometry();
+  const starVerts = [];
+  for (let i = 0; i < 2000; i++) {
+    const r = 800 + Math.random() * 200;
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    starVerts.push(r * Math.sin(phi) * Math.cos(theta), r * Math.sin(phi) * Math.sin(theta), r * Math.cos(phi));
+  }
+  starGeom.setAttribute('position', new THREE.Float32BufferAttribute(starVerts, 3));
+  scene.add(new THREE.Points(starGeom, new THREE.PointsMaterial({ color: 0x88bbaa, size: 0.8, transparent: true, opacity: 0.55 })));
+  scene.traverse(obj => {
+    if (obj.material && obj.type === 'Line') {
+      obj.material.color.set(0x1a3a2a);
+      obj.material.opacity = 0.28;
+      obj.material.transparent = true;
+    }
+  });
+  globe.pointOfView(regionPOV[mapRegion] || regionPOV.gulf, 0);
+  globe.controls().autoRotate = true;
+  globe.controls().autoRotateSpeed = 0.35;
+  globe.controls().enableDamping = true;
+  plotGlobeData();
+  let rotateT;
+  document.getElementById('globeViz').addEventListener('mousedown', () => {
+    globe.controls().autoRotate = false;
+    clearTimeout(rotateT);
+  });
+  document.getElementById('globeViz').addEventListener('mouseup', () => {
+    rotateT = setTimeout(() => { globe.controls().autoRotate = true; }, 12000);
+  });
+  window.addEventListener('resize', () => {
+    const el = document.getElementById('mapContainer');
+    globe.width(el.clientWidth).height(el.clientHeight || 520);
+  });
+}
+
+function mapZoom(factor) {
+  if (!globe) return;
+  const pov = globe.pointOfView();
+  const alt = Math.max(0.12, Math.min(2.5, (pov.altitude || 1) * factor));
+  globe.pointOfView({ lat: pov.lat, lng: pov.lng, altitude: alt }, 400);
+}
+
+function setMapRegion(r) {
+  mapRegion = r;
+  if (globe) globe.pointOfView(regionPOV[r] || regionPOV.gulf, 1200);
+}
+
+function reinit() {
+  renderTopbar();
+  renderLeftRail();
+  renderLower();
+  renderRight();
+  plotGlobeData();
+  setTimeout(() => {
+    document.querySelectorAll('.mbar span').forEach(bar => {
+      const w = bar.style.width;
+      bar.style.width = '0%';
+      gsap.to(bar, { width: w, duration: 0.9, ease: 'power2.out' });
+    });
+  }, 100);
+}
+
+function runBoot() {
+  const n = D.meta.sourcesOk || 10;
+  const lines = [
+    { text: 'INITIALIZING LFG PORT OS · SYSTEM 08', delay: 0 },
+    { text: 'CONNECTING TELEMETRY SOURCES…', delay: 350 },
+    { text: '├─ BERTH · HINTERLAND · PRE-GATE · GATE', delay: 600 },
+    { text: '├─ YARD · CUSTOMS · REVENUE · SECURITY', delay: 800 },
+    { text: '└─ PCS · ACI / MANIFEST INTEL', delay: 1000 },
+    { text: `SWEEP COMPLETE — <span class="count">${n}</span> SOURCES <span class="ok">OK</span>`, delay: 1400 },
+    { text: 'GLOBE PROJECTION · GULF OF GUINEA: <span class="ok">ACTIVE</span>', delay: 1700 },
+    { text: 'SUPPLY CHAIN MESH · PRE-GATE: <span class="ok">LINKED</span>', delay: 2000 },
+    { text: 'PORT INTELLIGENCE SYNTHESIS: <span class="ok">ACTIVE</span>', delay: 2300 }
+  ];
+  const container = document.getElementById('bootLines');
+  container.innerHTML = '';
+  const tl = gsap.timeline();
+  tl.to('.logo-ring', { opacity: 1, duration: 0.55, ease: 'power2.out' }, 0);
+  tl.to(container, { opacity: 1, duration: 0.25 }, 0.25);
+  lines.forEach(line => {
+    tl.call(() => {
+      const div = document.createElement('div');
+      div.innerHTML = line.text;
+      div.style.opacity = '0';
+      container.appendChild(div);
+      gsap.to(div, { opacity: 1, duration: 0.18 });
+    }, null, line.delay / 1000 + 0.45);
+  });
+  tl.to('#bootFinal', { opacity: 1, duration: 0.35 }, 3.0);
+  tl.to('#boot', { opacity: 0, duration: 0.45, ease: 'power2.in' }, 3.5);
+  tl.set('#boot', { display: 'none' }, 3.95);
+  tl.to('#bgRadial', { opacity: 1, duration: 0.9 }, 3.55);
+  tl.to('#bgGrid', { opacity: 1, duration: 1.0 }, 3.65);
+  tl.to('#scanline', { opacity: 1, duration: 0.6 }, 3.85);
+  tl.to('#main', { opacity: 1, duration: 0.5 }, 3.6);
+  tl.call(() => {
+    gsap.from('.g-panel,.topbar,.map-container', { opacity: 0, y: 18, scale: 0.98, duration: 0.45, stagger: 0.05, ease: 'power2.out' });
+  }, null, 3.7);
+}
+
+async function loadData(skipBoot) {
+  try {
+    const r = await fetch('/api/data?role=' + encodeURIComponent(currentRole));
+    if (!r.ok) throw new Error('wait');
+    D = await r.json();
+    if (!skipBoot && !booted) {
+      initGlobe();
+      reinit();
+      runBoot();
+      booted = true;
+    } else {
+      reinit();
+    }
+    const tb = document.querySelector('.topbar');
+    if (tb && skipBoot) {
+      tb.style.borderColor = 'var(--accent)';
+      setTimeout(() => { tb.style.borderColor = ''; }, 1400);
+    }
+  } catch (e) {
+    if (!booted) {
+      document.getElementById('bootLines').innerHTML = '<div style="color:var(--danger)">NO TELEMETRY — start server</div>';
+      gsap.to('.logo-ring', { opacity: 1, duration: 0.5 });
+    }
+  }
+}
+
+function triggerSweep() {
+  fetch('/api/sweep', { method: 'POST' }).then(() => loadData(true));
+}
+
+function connectSSE() {
+  if (location.protocol === 'file:') return;
+  const es = new EventSource('/events');
+  es.addEventListener('sweep', () => loadData(true));
+  es.addEventListener('connected', () => {});
+  es.onerror = () => { es.close(); setTimeout(connectSSE, 5000); };
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadData(false);
+  connectSSE();
+  document.getElementById('mapContainer').addEventListener('dblclick', () => {
+    mapRegion = mapRegion === 'gulf' ? 'abidjan' : mapRegion === 'abidjan' ? 'sanpedro' : 'gulf';
+    setMapRegion(mapRegion);
+  });
+});
+</script>
+</body>
+</html>

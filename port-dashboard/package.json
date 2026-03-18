@@ -1,0 +1,15 @@
+{
+  "name": "lfg-port-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "LFG Port OS intelligence dashboard MVP — mock telemetry, delta, SSE",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node server.mjs"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}

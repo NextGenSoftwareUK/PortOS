@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "sweepId": "550e8400-e29b-41d4-a716-446655440000",
+    "site": "abidjan",
+    "generatedAt": "2026-03-18T12:00:00.000Z",
+    "sourcesOk": 10,
+    "sourcesFailed": 0
+  },
+  "domains": {
+    "berth": {
+      "label": "Berth & vessel",
+      "kpis": [
+        { "id": "occupied", "label": "Berths occupied", "value": 8, "unit": "of 12" },
+        { "id": "eta_24h", "label": "Vessels ETA 24h", "value": 5, "unit": "vessels" }
+      ]
+    },
+    "hinterland": {
+      "label": "Hinterland inbound",
+      "kpis": [
+        { "id": "inbound_eta_6h", "label": "Trucks ETA ≤6h", "value": 86, "unit": "vehicles" },
+        { "id": "delay_risk_trucks", "label": "At delay risk (>30m)", "value": 7, "unit": "vehicles" },
+        { "id": "rail_barge_24h", "label": "Rail / barge arrivals 24h", "value": 4, "unit": "consignments" }
+      ]
+    },
+    "pre_gate": {
+      "label": "Pre-gate & slots",
+      "kpis": [
+        { "id": "slot_bookings_4h", "label": "Booked slots (next 4h)", "value": 62, "unit": "slots" },
+        { "id": "slot_adherence_pct", "label": "On-time vs slot", "value": 78, "unit": "%" },
+        { "id": "pregate_docs_ready_pct", "label": "Docs complete pre-arrival", "value": 71, "unit": "%" },
+        { "id": "inland_exceptions", "label": "Open inland exceptions", "value": 5, "unit": "cases" }
+      ]
+    },
+    "gate": {
+      "label": "Gate throughput",
+      "kpis": [
+        { "id": "trucks_per_hr", "label": "Trucks / hour", "value": 42, "unit": "trucks", "trend": "up" },
+        { "id": "queue", "label": "Avg queue", "value": 14, "unit": "trucks" },
+        { "id": "exceptions", "label": "Exceptions (shift)", "value": 3, "unit": "events" }
+      ]
+    },
+    "yard": {
+      "label": "Yard",
+      "kpis": [
+        { "id": "fill_pct", "label": "Yard fill", "value": 72, "unit": "%" },
+        { "id": "dwell_avg_hr", "label": "Avg dwell", "value": 36, "unit": "hours" }
+      ]
+    },
+    "customs": {
+      "label": "Customs triage",
+      "kpis": [
+        { "id": "green_pct", "label": "GREEN", "value": 55, "unit": "%" },
+        { "id": "yellow_pct", "label": "YELLOW", "value": 32, "unit": "%" },
+        { "id": "red_pct", "label": "RED", "value": 13, "unit": "%" },
+        { "id": "clearance_avg_min", "label": "Avg clearance", "value": 48, "unit": "min" }
+      ]
+    },
+    "revenue": {
+      "label": "Revenue (digital)",
+      "kpis": [
+        { "id": "collected_today", "label": "Collected today", "value": 125000000, "unit": "XOF" },
+        { "id": "outstanding", "label": "Outstanding", "value": 42000000, "unit": "XOF" }
+      ]
+    },
+    "security": {
+      "label": "Security / ISPS",
+      "kpis": [
+        { "id": "personnel_on_site", "label": "Credentialed on site", "value": 890, "unit": "persons" },
+        { "id": "alerts_open", "label": "Open alerts", "value": 1, "unit": "alerts" }
+      ]
+    },
+    "pcs": {
+      "label": "PCS health",
+      "kpis": [
+        { "id": "api_latency_ms", "label": "PCS API p95", "value": 180, "unit": "ms" }
+      ]
+    },
+    "intel": {
+      "label": "ACI / pre-arrival",
+      "kpis": [
+        { "id": "manifests_ready_pct", "label": "Manifests ready pre-arrival", "value": 68, "unit": "%" }
+      ]
+    }
+  },
+  "alerts": [
+    { "tier": "ROUTINE", "message": "Gate queue +12% vs same hour yesterday", "domain": "gate" }
+  ]
+}

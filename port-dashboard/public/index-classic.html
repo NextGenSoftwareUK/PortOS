@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Port OS — Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0e14;
+      --panel: #121922;
+      --border: #1e2a3a;
+      --text: #e6edf3;
+      --muted: #7a8a9e;
+      --amber: #e8a838;
+      --green: #3fb950;
+      --red: #f85149;
+      --blue: #58a6ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "DM Sans", system-ui, sans-serif;
+      font-size: 15px;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(232, 168, 56, 0.08), transparent),
+        linear-gradient(180deg, #0a0e14 0%, #06080c 100%);
+    }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(18, 25, 34, 0.85);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .brand {
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      color: var(--amber);
+    }
+    .brand span { color: var(--muted); font-weight: 400; margin-left: 0.5rem; text-transform: none; }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    select, button, a.btn {
+      font-family: inherit;
+      font-size: 0.8rem;
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+    button:hover, a.btn:hover, select:hover { border-color: var(--amber); color: var(--amber); }
+    .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(63, 185, 80, 0.4); }
+      50% { opacity: 0.85; box-shadow: 0 0 0 6px rgba(63, 185, 80, 0); }
+    }
+    .meta { font-family: "JetBrains Mono", monospace; font-size: 0.72rem; color: var(--muted); }
+    main { padding: 1.25rem 1.5rem 3rem; max-width: 1400px; margin: 0 auto; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.1rem;
+      transition: border-color 0.2s;
+    }
+    .card:hover { border-color: #2a3d52; }
+    .card h2 {
+      margin: 0 0 0.85rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+    .kpi {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0.35rem 0;
+      border-bottom: 1px solid rgba(30, 42, 58, 0.6);
+    }
+    .kpi:last-child { border-bottom: none; }
+    .kpi label { color: var(--muted); font-size: 0.85rem; }
+    .kpi .val {
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text);
+    }
+    .kpi .unit { font-size: 0.75rem; color: var(--muted); margin-left: 0.25rem; }
+    .delta-panel {
+      margin-bottom: 1.25rem;
+      padding: 1rem 1.25rem;
+      background: rgba(232, 168, 56, 0.06);
+      border: 1px solid rgba(232, 168, 56, 0.25);
+      border-radius: 10px;
+    }
+    .delta-panel h3 { margin: 0 0 0.5rem; font-size: 0.8rem; color: var(--amber); }
+    .delta-panel p { margin: 0; color: var(--muted); font-size: 0.85rem; }
+    .delta-panel ul { margin: 0.5rem 0 0; padding-left: 1.2rem; font-size: 0.8rem; color: var(--text); max-height: 120px; overflow-y: auto; }
+    .alerts {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .alert {
+      font-size: 0.75rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+    .alert.PRIORITY { border-color: var(--amber); color: var(--amber); }
+    .alert.FLASH { border-color: var(--red); color: var(--red); }
+    .alert.ROUTINE { border-color: var(--blue); color: var(--blue); }
+    .loading { text-align: center; padding: 3rem; color: var(--muted); }
+    .err { color: var(--red); font-size: 0.85rem; margin-top: 0.5rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <div class="brand">LFG Port OS <span>Intelligence · System 08 + hinterland</span></div>
+      <div class="meta" id="sweepMeta">Starting sweep…</div>
+    </div>
+    <div class="toolbar">
+      <div class="pulse" title="SSE connected" id="sseDot"></div>
+      <label class="meta">View</label>
+      <select id="role" aria-label="Stakeholder view">
+        <option value="authority">PAA / Authority</option>
+        <option value="customs">Customs</option>
+        <option value="forwarder">Forwarder</option>
+        <option value="terminal">Terminal</option>
+      </select>
+      <button type="button" id="btnSweep">Sweep now</button>
+      <a class="btn" href="/export/brief.html" target="_blank" rel="noopener">Brief HTML</a>
+      <a class="btn" href="/export/brief.json" download>Brief JSON</a>
+    </div>
+  </header>
+  <main>
+    <div id="deltaWrap" class="delta-panel" hidden>
+      <h3>Sweep delta</h3>
+      <p id="deltaSummary"></p>
+      <ul id="deltaList"></ul>
+    </div>
+    <div class="alerts" id="alerts"></div>
+    <div id="grid" class="grid">
+      <div class="loading">Running parallel telemetry sources…</div>
+    </div>
+    <p class="meta" style="margin-top:2rem">MVP mock · v0.2 · hinterland + pre-gate supply-chain slice</p>
+  </main>
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    function fmtMoney(n) {
+      if (typeof n !== "number") return n;
+      if (n >= 1e6) return new Intl.NumberFormat("fr-CI").format(n);
+      return String(n);
+    }
+
+    function render(data) {
+      const meta = data.meta;
+      $("sweepMeta").textContent =
+        `Sweep ${meta.sweepId.slice(0, 8)} · ${meta.generatedAt} · sources ${meta.sourcesOk} ok` +
+        (meta.sourcesFailed ? ` · ${meta.sourcesFailed} failed` : "");
+
+      const d = data.delta;
+      if (d && (d.changes?.length || d.summary)) {
+        $("deltaWrap").hidden = false;
+        $("deltaSummary").textContent = d.summary + (d.prevSweepAt ? ` (vs ${d.prevSweepAt})` : "");
+        $("deltaList").innerHTML = (d.changes || [])
+          .slice(0, 25)
+          .map((c) => `<li><strong>${c.label}</strong>: ${c.from} → ${c.to} ${c.unit || ""}</li>`)
+          .join("") || "<li>No numeric changes.</li>";
+      }
+
+      $("alerts").innerHTML = (data.alerts || [])
+        .map((a) => `<span class="alert ${a.tier}">${a.tier}: ${a.message}</span>`)
+        .join("");
+
+      const grid = $("grid");
+      grid.innerHTML = "";
+      const order = [
+        "berth",
+        "hinterland",
+        "pre_gate",
+        "gate",
+        "yard",
+        "customs",
+        "revenue",
+        "security",
+        "pcs",
+        "intel",
+      ];
+      const keys = order.filter((k) => data.domains[k]);
+      for (const k of keys) {
+        const block = data.domains[k];
+        const card = document.createElement("article");
+        card.className = "card";
+        card.innerHTML =
+          `<h2>${block.label || k}</h2>` +
+          (block.kpis || [])
+            .map((kp) => {
+              const v =
+                kp.unit === "XOF" || (typeof kp.value === "number" && kp.value > 1e6)
+                  ? fmtMoney(kp.value)
+                  : kp.value;
+              return `<div class="kpi"><label>${kp.label}</label><span><span class="val">${v}</span><span class="unit">${kp.unit || ""}</span></span></div>`;
+            })
+            .join("");
+        grid.appendChild(card);
+      }
+    }
+
+    async function load() {
+      const role = $("role").value;
+      try {
+        const r = await fetch("/api/data?role=" + encodeURIComponent(role));
+        if (!r.ok) throw new Error(await r.text());
+        render(await r.json());
+      } catch (e) {
+        $("grid").innerHTML = `<div class="loading">Waiting for first sweep…<div class="err">${e.message}</div></div>`;
+      }
+    }
+
+    $("role").addEventListener("change", load);
+    $("btnSweep").addEventListener("click", async () => {
+      $("btnSweep").disabled = true;
+      try {
+        await fetch("/api/sweep", { method: "POST" });
+        await load();
+      } finally {
+        $("btnSweep").disabled = false;
+      }
+    });
+
+    const es = new EventSource("/events");
+    es.addEventListener("connected", () => {
+      $("sseDot").style.background = "var(--green)";
+    });
+    es.addEventListener("sweep", () => load());
+    es.onerror = () => {
+      $("sseDot").style.background = "var(--red)";
+    };
+
+    load();
+    setInterval(load, 30000);
+  </script>
+</body>
+</html>

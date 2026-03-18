@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://oasis.local/lfg/port-dashboard-v1",
+  "title": "Port OS dashboard sweep payload v1",
+  "description": "Canonical shape for one Port Intelligence sweep (MVP). Extend per connector.",
+  "type": "object",
+  "required": ["meta", "domains"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["sweepId", "site", "generatedAt"],
+      "properties": {
+        "sweepId": { "type": "string", "format": "uuid" },
+        "site": { "type": "string", "enum": ["abidjan", "sanpedro", "multi"] },
+        "generatedAt": { "type": "string", "format": "date-time" },
+        "sourcesOk": { "type": "integer", "minimum": 0 },
+        "sourcesFailed": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "domains": {
+      "type": "object",
+      "properties": {
+        "berth": { "$ref": "#/$defs/metricBlock" },
+        "gate": { "$ref": "#/$defs/metricBlock" },
+        "yard": { "$ref": "#/$defs/metricBlock" },
+        "customs": { "$ref": "#/$defs/metricBlock" },
+        "revenue": { "$ref": "#/$defs/metricBlock" },
+        "security": { "$ref": "#/$defs/metricBlock" },
+        "pcs": { "$ref": "#/$defs/metricBlock" },
+        "intel": { "$ref": "#/$defs/metricBlock" },
+        "hinterland": { "$ref": "#/$defs/metricBlock" },
+        "pre_gate": { "$ref": "#/$defs/metricBlock" }
+      },
+      "additionalProperties": { "$ref": "#/$defs/metricBlock" }
+    },
+    "alerts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["tier", "message"],
+        "properties": {
+          "tier": { "type": "string", "enum": ["FLASH", "PRIORITY", "ROUTINE"] },
+          "message": { "type": "string" },
+          "domain": { "type": "string" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "metricBlock": {
+      "type": "object",
+      "properties": {
+        "label": { "type": "string" },
+        "kpis": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "value"],
+            "properties": {
+              "id": { "type": "string" },
+              "label": { "type": "string" },
+              "value": {},
+              "unit": { "type": "string" },
+              "trend": { "type": "string", "enum": ["up", "down", "flat"] }
+            }
+          }
+        },
+        "sourceErrors": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}
