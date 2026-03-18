@@ -1,6 +1,6 @@
 # PortOS
 
-**Port intelligence dashboard** — multi-domain operational sweeps, delta tracking, stakeholder views, Crucix-style HUD (West Africa / LFG Port OS framing). MVP uses mock telemetry; designed to plug into PCS, TOS, TMS, and later OASIS holons.
+**Port intelligence dashboard** — multi-domain operational sweeps, delta tracking, stakeholder views, HUD (West Africa / LFG Port OS framing). MVP uses mock telemetry; designed to plug into PCS, TOS, TMS, and later OASIS holons.
 
 ## Quick start
 
