@@ -117,7 +117,7 @@ Holons are grouped into 7 **zomes** (logical domains). Each type has a fixed set
 4. Click the **HOLONS badge** (top-right of the dashboard) → opens the full store overview
 5. Click the **"Container lifecycle"** tab → type an ISO number to trace a full container journey
 
-### Via the API (for Sohaib to use directly)
+### Via the API
 
 All endpoints are live on the Railway URL. No auth needed (PoC).
 
