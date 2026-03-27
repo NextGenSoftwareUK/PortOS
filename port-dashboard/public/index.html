@@ -119,9 +119,69 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--s
 .classic-link{font-family:var(--mono);font-size:9px;color:var(--dim);margin-left:8px}
 .classic-link a{color:var(--accent2)}
 @media(max-width:1200px){.grid{grid-template-columns:1fr}.feed{max-height:400px}}
+
+/* ── Holon drawer ──────────────────────────────────────────────── */
+#holonDrawer{position:fixed;top:0;right:-440px;width:440px;height:100vh;background:rgba(2,6,12,0.97);border-left:1px solid var(--border-bright);z-index:600;display:flex;flex-direction:column;transition:right 0.3s cubic-bezier(0.4,0,0.2,1);backdrop-filter:blur(24px)}
+#holonDrawer.open{right:0}
+.hd-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.hd-title{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent)}
+.hd-close{background:none;border:1px solid var(--border);color:var(--dim);font-size:16px;width:28px;height:28px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.hd-close:hover{border-color:var(--accent);color:var(--accent)}
+.hd-tabs{display:flex;gap:4px;padding:10px 16px;border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap}
+.hd-tab{font-family:var(--mono);font-size:9px;padding:4px 9px;border:1px solid var(--border);color:var(--dim);cursor:pointer;text-transform:uppercase;letter-spacing:0.08em;transition:all 0.2s}
+.hd-tab:hover{border-color:var(--accent2);color:var(--accent2)}
+.hd-tab.active{background:var(--accent);border-color:var(--accent);color:#03140d}
+.hd-search{padding:10px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.hd-search input{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:11px;padding:7px 10px;outline:none;transition:border-color 0.2s}
+.hd-search input::placeholder{color:var(--dim)}
+.hd-search input:focus{border-color:var(--accent)}
+.hd-body{flex:1;overflow-y:auto;padding:12px 16px}
+.hd-body::-webkit-scrollbar{width:3px}
+.hd-body::-webkit-scrollbar-thumb{background:rgba(100,240,200,0.2)}
+.hd-section{margin-bottom:14px}
+.hd-section-head{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--dim);margin-bottom:6px;display:flex;align-items:center;justify-content:space-between}
+.hd-section-head .cnt{color:var(--accent);font-weight:600}
+.hd-row{padding:7px 9px;border:1px solid rgba(255,255,255,0.05);background:rgba(255,255,255,0.02);margin-bottom:3px;font-size:10px;line-height:1.5;font-family:var(--mono)}
+.hd-row:hover{border-color:rgba(100,240,200,0.18);background:rgba(100,240,200,0.04);cursor:pointer}
+.hd-row .rk{color:var(--dim);font-size:9px}
+.hd-row .rv{color:var(--text)}
+.hd-row .rb{display:inline-block;padding:1px 6px;font-size:9px;letter-spacing:0.06em;border:1px solid;margin-left:4px}
+.rb-green{color:#64f0c8;border-color:rgba(100,240,200,0.35);background:rgba(100,240,200,0.08)}
+.rb-yellow{color:#ffb84c;border-color:rgba(255,184,76,0.35);background:rgba(255,184,76,0.08)}
+.rb-red{color:#ff5f63;border-color:rgba(255,95,99,0.35);background:rgba(255,95,99,0.08)}
+.rb-blue{color:#44ccff;border-color:rgba(68,204,255,0.35);background:rgba(68,204,255,0.08)}
+.rb-dim{color:var(--dim);border-color:rgba(255,255,255,0.12)}
+.hd-bar-wrap{height:4px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;margin-top:4px}
+.hd-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,rgba(68,204,255,0.5),var(--accent))}
+.lifecycle-grid{display:flex;flex-direction:column;gap:4px}
+.lc-step{display:flex;align-items:flex-start;gap:8px;padding:8px;border:1px solid rgba(255,255,255,0.05)}
+.lc-step.active{border-color:rgba(100,240,200,0.3);background:rgba(100,240,200,0.04)}
+.lc-step .lc-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:2px}
+.lc-step .lc-info{flex:1;min-width:0}
+.lc-step .lc-label{font-family:var(--mono);font-size:9px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:0.1em}
+.lc-step .lc-val{font-size:11px;color:var(--text);margin-top:2px;word-break:break-all}
+.hd-empty{font-family:var(--mono);font-size:10px;color:var(--dim);padding:20px 0;text-align:center}
+.inject-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.inject-btn{font-family:var(--mono);font-size:9px;padding:6px 10px;border:1px solid var(--border);color:var(--dim);background:rgba(255,255,255,0.02);cursor:pointer;text-transform:uppercase;letter-spacing:0.06em;transition:all 0.2s}
+.inject-btn:hover{border-color:var(--warn);color:var(--warn)}
+.inject-btn.flash-btn:hover{border-color:var(--danger);color:var(--danger)}
+.hd-count-pill{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:0.06em;padding:5px 10px;border:1px solid var(--border)}
+.hd-count-pill .v{color:var(--accent);font-weight:600}
 </style>
 </head>
 <body>
+<!-- Holon drill-down drawer -->
+<div id="holonDrawer">
+  <div class="hd-head">
+    <span class="hd-title" id="hdTitle">HOLONS</span>
+    <button class="hd-close" onclick="closeDrawer()" title="Close">×</button>
+  </div>
+  <div class="hd-tabs" id="hdTabs"></div>
+  <div class="hd-search" id="hdSearch" style="display:none">
+    <input type="text" id="isoInput" placeholder="MSCU1000000 — container ISO number" oninput="searchLifecycle(this.value)"/>
+  </div>
+  <div class="hd-body" id="hdBody"><div class="hd-empty">Select a domain tile to inspect holons</div></div>
+</div>
 <div id="boot">
   <div class="logo-ring">
     <span class="logo-text">LFG</span>
@@ -162,6 +222,8 @@ let globe = null;
 let currentRole = new URLSearchParams(location.search).get('role') || 'authority';
 let mapRegion = 'gulf';
 let booted = false;
+let holonTotal = 0;
+let drawerDomain = null;
 
 const DOMAIN_ORDER = ['berth','hinterland','pre_gate','gate','yard','customs','revenue','security','pcs','intel'];
 const DOMAIN_DOT = {
@@ -192,6 +254,7 @@ function renderTopbar() {
   const m = D.meta;
   const ts = new Date(m.generatedAt);
   const hot = (D.alerts || []).some(a => a.tier === 'PRIORITY' || a.tier === 'FLASH');
+  if (D.holonTotal) holonTotal = D.holonTotal;
   document.getElementById('topbar').innerHTML = `
     <div class="top-left">
       <span class="brand">LFG PORT OS</span>
@@ -204,6 +267,7 @@ function renderTopbar() {
       ).join('')}
     </div>
     <div class="top-right">
+      <span class="hd-count-pill" title="Total holons tracked in store" onclick="openDrawerTab('overview')" style="cursor:pointer">HOLONS <span class="v">${holonTotal || '…'}</span></span>
       <span class="meta-pill">SWEEP <span class="v">${(m.sweepId||'').slice(0,8)}</span></span>
       <span class="meta-pill">SRC <span class="v">${m.sourcesOk}/${m.sourcesOk + (m.sourcesFailed||0)}</span></span>
       <span class="meta-pill">${ts.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span>
@@ -219,6 +283,7 @@ function renderLeftRail() {
     const k0 = b.kpis[0];
     const sub = b.kpis.slice(1, 3).map(k => k.label + ' ' + fmtVal(k.value, k.unit)).join(' · ');
     layers.push({
+      key,
       name: b.label || key,
       count: fmtVal(k0.value, k0.unit) + (k0.unit && k0.unit !== 'XOF' ? ' ' + k0.unit : ''),
       sub: sub || (b.kpis.length + ' KPIs'),
@@ -231,7 +296,7 @@ function renderLeftRail() {
   document.getElementById('leftRail').innerHTML = `
     <div class="g-panel">
       <div class="sec-head"><h3>Domain telemetry</h3><span class="badge">LIVE</span></div>
-      ${layers.map(l => `<div class="layer-item"><div class="layer-left"><div class="ldot ${l.dot}"></div><div><div class="layer-name">${l.name}</div><div class="layer-sub">${l.sub}</div></div></div><div class="layer-count">${l.count}</div></div>`).join('')}
+      ${layers.map(l => `<div class="layer-item" onclick="openDrawer('${l.key}')" style="cursor:pointer" title="Inspect ${l.name} holons"><div class="layer-left"><div class="ldot ${l.dot}"></div><div><div class="layer-name">${l.name}</div><div class="layer-sub">${l.sub}</div></div></div><div class="layer-count">${l.count}</div></div>`).join('')}
     </div>
     <div class="g-panel">
       <div class="sec-head"><h3>Throughput pulse</h3><span class="badge">GATE</span></div>
@@ -486,6 +551,482 @@ document.addEventListener('DOMContentLoaded', () => {
     mapRegion = mapRegion === 'gulf' ? 'abidjan' : mapRegion === 'abidjan' ? 'sanpedro' : 'gulf';
     setMapRegion(mapRegion);
   });
+});
+
+// ── Holon drawer ─────────────────────────────────────────────────────────────
+
+const DOMAIN_HOLON_TYPES = {
+  berth:      ['BerthHolon','VesselCallHolon'],
+  gate:       ['GateEventHolon','SlotBookingHolon'],
+  yard:       ['YardBlockHolon','YardPositionHolon'],
+  customs:    ['CustomsTriageHolon','TradeDocumentHolon'],
+  revenue:    ['RevenueItemHolon'],
+  security:   ['AlertHolon','ShiftHolon'],
+  intel:      ['VesselCallHolon','SweepSnapshotHolon'],
+  hinterland: ['HinterlandETAHolon','InlandLegHolon','CarrierHolon'],
+  pre_gate:   ['SlotBookingHolon','InlandExceptionHolon','TradeDocumentHolon'],
+  pcs:        ['SweepSnapshotHolon'],
+  overview:   [],
+};
+
+let hdCache = {};
+
+function closeDrawer() {
+  document.getElementById('holonDrawer').classList.remove('open');
+  drawerDomain = null;
+}
+
+async function openDrawer(domain) {
+  drawerDomain = domain;
+  const drawer = document.getElementById('holonDrawer');
+  drawer.classList.add('open');
+  renderDrawerTabs(domain);
+  document.getElementById('hdSearch').style.display = domain === 'lifecycle' ? '' : 'none';
+  document.getElementById('hdTitle').textContent = domain === 'overview' ? 'HOLON STORE' :
+    domain === 'lifecycle' ? 'CONTAINER LIFECYCLE' :
+    (D?.domains?.[domain]?.label || domain).toUpperCase() + ' · HOLONS';
+  await renderDrawerContent(domain);
+}
+
+function openDrawerTab(domain) { openDrawer(domain); }
+
+function renderDrawerTabs(active) {
+  const tabs = [
+    { id:'overview', label:'Store' },
+    { id:'berth', label:'Berth' },
+    { id:'gate', label:'Gate' },
+    { id:'yard', label:'Yard' },
+    { id:'customs', label:'Customs' },
+    { id:'hinterland', label:'Hinterland' },
+    { id:'pre_gate', label:'Pre-gate' },
+    { id:'revenue', label:'Revenue' },
+    { id:'security', label:'Security' },
+    { id:'lifecycle', label:'🔍 Container' },
+  ];
+  document.getElementById('hdTabs').innerHTML = tabs
+    .map(t => `<button class="hd-tab ${t.id===active?'active':''}" onclick="openDrawer('${t.id}')">${t.label}</button>`)
+    .join('');
+}
+
+async function fetchHolonType(type, limit = 80) {
+  if (hdCache[type] && hdCache[type]._ts > Date.now() - 8000) return hdCache[type].data;
+  const r = await fetch(`/api/holons/${type}?limit=${limit}`);
+  const json = await r.json();
+  hdCache[type] = { data: json, _ts: Date.now() };
+  return json;
+}
+
+async function renderDrawerContent(domain) {
+  const body = document.getElementById('hdBody');
+  body.innerHTML = '<div class="hd-empty">Loading…</div>';
+
+  if (domain === 'overview') { await renderOverview(body); return; }
+  if (domain === 'lifecycle') { renderLifecycleSearch(body); return; }
+
+  const types = DOMAIN_HOLON_TYPES[domain] || [];
+  const results = await Promise.all(types.map(t => fetchHolonType(t)));
+  const data = {};
+  types.forEach((t, i) => { data[t] = results[i]; });
+
+  const sections = [];
+
+  switch(domain) {
+    case 'berth':    sections.push(renderBerths(data), renderVesselCalls(data)); break;
+    case 'gate':     sections.push(renderGateEvents(data), renderSlotsSummary(data)); break;
+    case 'yard':     sections.push(renderYardBlocks(data)); break;
+    case 'customs':  sections.push(renderCustomsTriage(data)); break;
+    case 'revenue':  sections.push(renderRevenue(data)); break;
+    case 'security': sections.push(renderAlerts(data), renderShifts(data)); break;
+    case 'intel':    sections.push(renderManifests(data)); break;
+    case 'hinterland': sections.push(renderHinterlandEtas(data), renderInlandLegs(data)); break;
+    case 'pre_gate': sections.push(renderPreGate(data)); break;
+    case 'pcs':      sections.push(renderSweepSnapshots(data)); break;
+    default:         sections.push('<div class="hd-empty">No holon view for this domain</div>');
+  }
+
+  sections.push(renderInjectButtons(domain));
+  body.innerHTML = sections.join('');
+}
+
+function rb(text, variant='dim') { return `<span class="rb rb-${variant}">${text}</span>`; }
+function statusRb(s) {
+  if (!s) return '';
+  const v = s === 'occupied'||s==='operations'||s==='cleared'||s==='valid'||s==='collected' ? 'green'
+    : s === 'free'||s==='scheduled'||s==='pending'||s==='outstanding' ? 'blue'
+    : s === 'inspection-required'||s==='RED'||s==='FLASH'||s==='seized' ? 'red'
+    : s === 'YELLOW'||s==='hold'||s==='reserved'||s==='mismatch' ? 'yellow'
+    : 'dim';
+  return rb(s, v);
+}
+function riskRb(r) { return rb(r, r==='GREEN'?'green':r==='YELLOW'?'yellow':'red'); }
+function fmtTime(iso) { if (!iso) return '—'; const d=new Date(iso); return d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'}); }
+function fmtDate(iso) { if (!iso) return '—'; const d=new Date(iso); return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short'})+' '+fmtTime(iso); }
+function fmtMoney(n) { return n>0 ? new Intl.NumberFormat('fr-CI').format(n)+' XOF' : '—'; }
+function bar(pct) { return `<div class="hd-bar-wrap"><div class="hd-bar-fill" style="width:${Math.min(100,Math.max(0,pct))}%"></div></div>`; }
+
+function renderBerths(data) {
+  const items = (data.BerthHolon?.items||[]).sort((a,b)=>a.BerthNumber?.localeCompare(b.BerthNumber));
+  const occupied = items.filter(b=>b.Status==='occupied').length;
+  return `<div class="hd-section">
+    <div class="hd-section-head"><span>Berths</span><span class="cnt">${occupied}/${items.length} occupied</span></div>
+    ${items.map(b=>`<div class="hd-row">
+      <span class="rv">${b.BerthNumber}</span> ${statusRb(b.Status)}
+      <span class="rk"> · max ${b.MaxDraftM}m draft · ${b.MaxLoaM}m LOA</span>
+    </div>`).join('')}
+  </div>`;
+}
+
+function renderVesselCalls(data) {
+  const items = (data.VesselCallHolon?.items||[]).sort((a,b)=>new Date(a.Eta||0)-new Date(b.Eta||0));
+  return `<div class="hd-section">
+    <div class="hd-section-head"><span>Vessel calls</span><span class="cnt">${items.length}</span></div>
+    ${items.slice(0,8).map(c=>`<div class="hd-row">
+      <span class="rv">${c.VoyageNumber}</span> ${statusRb(c.Status)}
+      <span class="rk"> · manifest ${c.ManifestReadinessPct||0}%</span>
+      <br><span class="rk">ETA ${fmtDate(c.Eta)} · ${c.ImportTeu||0}+${c.ExportTeu||0} TEU</span>
+    </div>`).join('')}
+  </div>`;
+}
+
+function renderGateEvents(data) {
+  const all = data.GateEventHolon?.items||[];
+  const recent = [...all].sort((a,b)=>new Date(b.Timestamp)-new Date(a.Timestamp)).slice(0,15);
+  const exceptions = all.filter(e=>e.ExceptionFlag);
+  return `<div class="hd-section">
+    <div class="hd-section-head"><span>Recent gate events</span><span class="cnt">${all.length} total · ${exceptions.length} exceptions</span></div>
+    ${recent.map(e=>`<div class="hd-row ${e.ExceptionFlag?'flash':''}">
+      <span class="rv">${fmtTime(e.Timestamp)}</span>
+      ${rb(e.Direction.toUpperCase(), e.Direction==='in'?'green':'blue')}
+      <span class="rv"> ${e.OcrReadPlate}</span>
+      ${statusRb(e.PlateMatchResult)}
+      ${e.ExceptionFlag?rb('⚠ EXCEPTION','red'):''}
+      <span class="rk"> · ${e.ProcessingTimeSeconds}s</span>
+    </div>`).join('')}
+  </div>`;
+}
+
+function renderSlotsSummary(data) {
+  const slots = data.SlotBookingHolon?.items||[];
+  const now = Date.now();
+  const upcoming = slots.filter(s=>new Date(s.SlotWindowStart).getTime()>now&&new Date(s.SlotWindowStart).getTime()-now<4*3600_000);
+  const confirmed = upcoming.filter(s=>s.DoConfirmed).length;
+  const pct = upcoming.length ? Math.round(confirmed/upcoming.length*100) : 0;
+  return `<div class="hd-section">
+    <div class="hd-section-head"><span>Slot bookings (next 4h)</span><span class="cnt">${upcoming.length} · ${pct}% adherent</span></div>
+    ${bar(pct)}
+    <div style="margin-top:6px">${upcoming.slice(0,8).map(s=>`<div class="hd-row">
+      <span class="rv">${fmtTime(s.SlotWindowStart)}</span>
+      ${statusRb(s.Status)}
+      ${s.DoConfirmed?rb('DO ✓','green'):rb('DO pending','yellow')}
+    </div>`).join('')}</div>
+  </div>`;
+}
+
+function renderYardBlocks(data) {
+  const blocks = data.YardBlockHolon?.items||[];
+  const totalCap = blocks.reduce((s,b)=>s+b.Capacity,0);
+  const totalFill = blocks.reduce((s,b)=>s+b.CurrentFill,0);
+  const overall = totalCap ? Math.round(totalFill/totalCap*100) : 0;
+  return `<div class="hd-section">
+    <div class="hd-section-head"><span>Yard blocks</span><span class="cnt">${totalFill}/${totalCap} TEU · ${overall}% fill</span></div>
+    ${blocks.map(b=>{
+      const pct=Math.round(b.CurrentFill/b.Capacity*100);
+      const v=pct>85?'red':pct>70?'yellow':'green';
+      return `<div class="hd-row">
+        <span class="rv">${b.BlockName}</span> ${rb(b.Zone,'blue')} ${rb(pct+'%',v)}
+        <span class="rk"> · ${b.CurrentFill}/${b.Capacity} TEU</span>
+        ${bar(pct)}
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function renderCustomsTriage(data) {
+  const items = data.CustomsTriageHolon?.items||[];
+  const green=items.filter(t=>t.RiskLevel==='GREEN').length;
+  const yellow=items.filter(t=>t.RiskLevel==='YELLOW').length;
+  const red=items.filter(t=>t.RiskLevel==='RED').length;
+  const total=items.length||1;
+  const docs = data.TradeDocumentHolon?.items||[];
+  const approved = docs.filter(d=>d.Status==='approved').length;
+  const sample = [...items].sort((a,b)=>b.RiskLevel?.localeCompare(a.RiskLevel)).slice(0,12);
+  return `<div class="hd-section">
+    <div class="hd-section-head"><span>Customs triage</span><span class="cnt">${items.length} containers</span></div>
+    <div class="hd-row">
+      ${riskRb('GREEN')} <span class="rv"> ${green}</span> <span class="rk">(${Math.round(green/total*100)}%)</span> &nbsp;
+      ${riskRb('YELLOW')} <span class="rv"> ${yellow}</span> <span class="rk">(${Math.round(yellow/total*100)}%)</span> &nbsp;
+      ${riskRb('RED')} <span class="rv"> ${red}</span> <span class="rk">(${Math.round(red/total*100)}%)</span>
+      ${bar(Math.round(green/total*100))}
+    </div>
+    ${sample.map(t=>`<div class="hd-row">
+      ${riskRb(t.RiskLevel)} ${statusRb(t.ClearanceStatus)}
+      <span class="rk"> · ${t.InspectionType} · ${t.AvgClearanceMinutes}min</span>
+    </div>`).join('')}
+    <div class="hd-section-head" style="margin-top:10px"><span>Trade docs</span><span class="cnt">${approved}/${docs.length} approved</span></div>
+    ${bar(docs.length?Math.round(approved/docs.length*100):0)}
+  </div>`;
+}
+
+function renderRevenue(data) {
+  const items = data.RevenueItemHolon?.items||[];
+  const todayStart=new Date();todayStart.setHours(0,0,0,0);
+  const collected=items.filter(r=>r.Status==='collected'&&r.PaidAt&&new Date(r.PaidAt)>=todayStart).reduce((s,r)=>s+r.Amount,0);
+  const outstanding=items.filter(r=>r.Status==='outstanding').reduce((s,r)=>s+r.Amount,0);
+  const byType={};
+  for(const r of items){if(!byType[r.ChargeType])byType[r.ChargeType]={collected:0,outstanding:0};byType[r.ChargeType][r.Status==='collected'?'collected':'outstanding']+=r.Amount;}
+  return `<div class="hd-section">
+    <div class="hd-section-head"><span>Revenue items</span><span class="cnt">${items.length}</span></div>
+    <div class="hd-row">${rb('Collected','green')} <span class="rv"> ${fmtMoney(collected)}</span></div>
+    <div class="hd-row">${rb('Outstanding','yellow')} <span class="rv"> ${fmtMoney(outstanding)}</span></div>
+    <div class="hd-section-head" style="margin-top:10px"><span>By charge type</span></div>
+    ${Object.entries(byType).map(([t,[c,o]])=>`<div class="hd-row">
+      <span class="rv">${t}</span>
+      <span class="rk"> · ${fmtMoney(c||0)} collected · ${fmtMoney(o||0)} outstanding</span>
+    </div>`).join('')}
+  </div>`;
+}
+
+function renderAlerts(data) {
+  const alerts = data.AlertHolon?.items||[];
+  const open = alerts.filter(a=>!a.IsResolved);
+  return `<div class="hd-section">
+    <div class="hd-section-head"><span>Alert holons</span><span class="cnt">${open.length} open / ${alerts.length} total</span></div>
+    ${alerts.slice(0,10).map(a=>`<div class="hd-row">
+      ${rb(a.Severity, a.Severity==='FLASH'?'red':a.Severity==='ADVISORY'?'yellow':'dim')}
+      ${rb(a.Domain,'blue')}
+      ${a.IsResolved?rb('resolved','dim'):''}
+      <span class="rk"> · ${fmtTime(a.TriggeredAt)}</span>
+      <br><span class="rv" style="font-size:10px">${a.Body||a.Title}</span>
+    </div>`).join('')}
+    ${!alerts.length?'<div class="hd-empty">No alert holons</div>':''}
+  </div>`;
+}
+
+function renderShifts(data) {
+  const shifts = (data.ShiftHolon?.items||[]).sort((a,b)=>new Date(b.StartTime)-new Date(a.StartTime));
+  return `<div class="hd-section">
+    <div class="hd-section-head"><span>Shift holons</span><span class="cnt">${shifts.length}</span></div>
+    ${shifts.map(s=>`<div class="hd-row">
+      <span class="rv">${fmtDate(s.StartTime)}</span> → <span class="rv">${fmtTime(s.EndTime)}</span>
+      <br><span class="rk">trucks: ${s.TrucksThroughGate} · crane: ${s.CraneProductivityMph} mph · gate: ${s.AvgGateTimeSeconds}s avg · incidents: ${s.IncidentCount}</span>
+    </div>`).join('')}
+  </div>`;
+}
+
+function renderManifests(data) {
+  const calls = data.VesselCallHolon?.items||[];
+  const inbound = calls.filter(c=>['scheduled','at-anchor'].includes(c.Status));
+  const avg = inbound.length ? Math.round(inbound.reduce((s,c)=>s+(c.ManifestReadinessPct||0),0)/inbound.length) : 0;
+  return `<div class="hd-section">
+    <div class="hd-section-head"><span>Pre-arrival manifest readiness</span><span class="cnt">${avg}% avg</span></div>
+    ${bar(avg)}
+    ${inbound.map(c=>`<div class="hd-row">
+      <span class="rv">${c.VoyageNumber}</span> ${statusRb(c.Status)}
+      <span class="rk"> · manifest ${c.ManifestReadinessPct||0}%</span>
+      ${bar(c.ManifestReadinessPct||0)}
+    </div>`).join('')}
+    ${!inbound.length?'<div class="hd-empty">No inbound vessel calls</div>':''}
+  </div>`;
+}
+
+function renderHinterlandEtas(data) {
+  const etas = (data.HinterlandETAHolon?.items||[]).sort((a,b)=>new Date(a.EstimatedArrivalAt)-new Date(b.EstimatedArrivalAt));
+  const now=Date.now();const sixH=6*3600_000;
+  const upcoming=etas.filter(e=>new Date(e.EstimatedArrivalAt).getTime()-now>0&&new Date(e.EstimatedArrivalAt).getTime()-now<sixH);
+  const delayed=upcoming.filter(e=>e.DelayMinutes>0);
+  return `<div class="hd-section">
+    <div class="hd-section-head"><span>Hinterland ETAs (next 6h)</span><span class="cnt">${upcoming.length} · ${delayed.length} delayed</span></div>
+    ${upcoming.slice(0,12).map(e=>{
+      const minsOut=Math.round((new Date(e.EstimatedArrivalAt).getTime()-now)/60_000);
+      const v=e.DelayMinutes>0?'yellow':'green';
+      return `<div class="hd-row">
+        ${rb('ETA '+minsOut+'m',v)}
+        <span class="rk"> · conf ${Math.round(e.ConfidenceScore*100)}%</span>
+        ${e.DelayMinutes>0?rb('+'+e.DelayMinutes+'min delay','yellow'):''}
+        ${e.DelayReason&&e.DelayReason!=='unknown'?`<span class="rk"> · ${e.DelayReason}</span>`:''}
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function renderInlandLegs(data) {
+  const legs = data.InlandLegHolon?.items||[];
+  const risk = legs.filter(l=>l.DelayRiskScore>0.5);
+  return `<div class="hd-section">
+    <div class="hd-section-head"><span>Inland legs</span><span class="cnt">${legs.length} · ${risk.length} at risk</span></div>
+    ${legs.slice(0,10).map(l=>{
+      const rScore=Math.round(l.DelayRiskScore*100);
+      const v=rScore>50?'red':rScore>30?'yellow':'green';
+      return `<div class="hd-row">
+        ${rb(l.ModeOfTransport,'blue')} ${statusRb(l.Status)}
+        <span class="rk"> · risk ${rScore}%</span>
+        ${bar(rScore)}
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function renderPreGate(data) {
+  const slots = data.SlotBookingHolon?.items||[];
+  const exceptions = data.InlandExceptionHolon?.items||[];
+  const openEx = exceptions.filter(e=>!e.IsResolved);
+  const now=Date.now();const fourH=4*3600_000;
+  const upcoming=slots.filter(s=>new Date(s.SlotWindowStart).getTime()-now>0&&new Date(s.SlotWindowStart).getTime()-now<fourH);
+  return `<div class="hd-section">
+    <div class="hd-section-head"><span>Slot bookings (next 4h)</span><span class="cnt">${upcoming.length}</span></div>
+    ${upcoming.slice(0,8).map(s=>`<div class="hd-row">
+      <span class="rv">${fmtTime(s.SlotWindowStart)}</span> ${statusRb(s.Status)}
+      ${s.DoConfirmed?rb('DO ✓','green'):rb('DO pending','yellow')}
+    </div>`).join('')}
+    <div class="hd-section-head" style="margin-top:10px"><span>Inland exceptions</span><span class="cnt">${openEx.length} open</span></div>
+    ${exceptions.slice(0,8).map(e=>`<div class="hd-row">
+      ${rb(e.ExceptionType,'yellow')}
+      ${rb(e.Severity, e.Severity==='critical'?'red':e.Severity==='high'?'yellow':'dim')}
+      ${e.IsResolved?rb('resolved','dim'):rb('open','red')}
+    </div>`).join('')}
+  </div>`;
+}
+
+function renderSweepSnapshots(data) {
+  const snaps = (data.SweepSnapshotHolon?.items||[]).sort((a,b)=>new Date(b.SweepStartedAt)-new Date(a.SweepStartedAt));
+  return `<div class="hd-section">
+    <div class="hd-section-head"><span>Sweep snapshots</span><span class="cnt">${snaps.length}</span></div>
+    ${snaps.slice(0,8).map(s=>`<div class="hd-row">
+      <span class="rv">${fmtDate(s.SweepStartedAt)}</span>
+      <span class="rk"> · ${s.SweepCompletedMs}ms · ${s.AlertCount} alerts</span>
+      <br><span class="rk">hash: ${(s.CanonicalPayloadHash||'').slice(0,16)}…</span>
+    </div>`).join('')}
+    ${!snaps.length?'<div class="hd-empty">No snapshots yet</div>':''}
+  </div>`;
+}
+
+async function renderOverview(body) {
+  const r = await fetch('/api/holons');
+  const json = await r.json();
+  const sorted = Object.entries(json.byType||{}).sort((a,b)=>b[1]-a[1]);
+  body.innerHTML = `<div class="hd-section">
+    <div class="hd-section-head"><span>Holon store</span><span class="cnt">${json.total} total holons</span></div>
+    ${sorted.map(([t,n])=>`<div class="hd-row" onclick="openDrawer('${domainForType(t)}')" style="cursor:pointer">
+      <span class="rv">${t}</span> ${rb(n,'green')}
+      ${bar(Math.min(100, n/3))}
+    </div>`).join('')}
+  </div>
+  ${renderInjectButtons('overview')}`;
+}
+
+function domainForType(type) {
+  const map = {
+    BerthHolon:'berth', VesselCallHolon:'berth', VesselHolon:'berth',
+    GateEventHolon:'gate', SlotBookingHolon:'gate',
+    YardBlockHolon:'yard', YardPositionHolon:'yard',
+    CustomsTriageHolon:'customs', TradeDocumentHolon:'customs',
+    RevenueItemHolon:'revenue',
+    AlertHolon:'security', ShiftHolon:'security',
+    HinterlandETAHolon:'hinterland', InlandLegHolon:'hinterland',
+    InlandExceptionHolon:'pre_gate',
+    SweepSnapshotHolon:'pcs',
+  };
+  return map[type] || 'overview';
+}
+
+function renderInjectButtons(domain) {
+  const btns = [
+    { event:'gate_rush', label:'Inject: Gate Rush', cls:'inject-btn' },
+    { event:'customs_flash', label:'Inject: Customs FLASH', cls:'inject-btn flash-btn' },
+    { event:'vessel_arrival', label:'Inject: Vessel Arrival', cls:'inject-btn' },
+  ];
+  return `<div class="hd-section" style="margin-top:16px">
+    <div class="hd-section-head"><span>Event injection</span><span class="cnt" style="color:var(--warn)">DEMO</span></div>
+    <div class="inject-row">
+      ${btns.map(b=>`<button class="${b.cls}" onclick="injectEvent('${b.event}')">${b.label}</button>`).join('')}
+    </div>
+    <div style="font-family:var(--mono);font-size:9px;color:var(--dim)">Injects synthetic events into the holon store — triggers live KPI changes on next sweep</div>
+  </div>`;
+}
+
+async function injectEvent(event) {
+  const btn = event === 'customs_flash' ? document.querySelector('.flash-btn') : null;
+  try {
+    const r = await fetch('/api/events/simulate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event }),
+    });
+    const json = await r.json();
+    hdCache = {}; // invalidate cache
+    // Re-render current drawer content
+    if (drawerDomain) await renderDrawerContent(drawerDomain);
+    // Trigger a sweep so the topbar updates
+    setTimeout(() => fetch('/api/sweep', { method: 'POST' }).then(() => loadData(true)), 500);
+    console.log('[inject]', json);
+  } catch(e) { console.error('[inject]', e); }
+}
+
+function renderLifecycleSearch(body) {
+  document.getElementById('hdSearch').style.display = '';
+  body.innerHTML = `<div class="hd-empty">Enter a container ISO number above<br><span style="color:var(--dim);font-size:9px">e.g. MSCU1000000 through MSCU1000119</span></div>`;
+}
+
+async function searchLifecycle(val) {
+  const iso = val.trim().toUpperCase();
+  if (iso.length < 8) return;
+  const body = document.getElementById('hdBody');
+  body.innerHTML = '<div class="hd-empty">Searching…</div>';
+  try {
+    const r = await fetch(`/api/holons/container-lifecycle/${iso}`);
+    if (!r.ok) { body.innerHTML = `<div class="hd-empty">Container ${iso} not found</div>`; return; }
+    const data = await r.json();
+    renderLifecycle(body, data);
+  } catch(e) { body.innerHTML = '<div class="hd-empty">Error fetching lifecycle</div>'; }
+}
+
+function renderLifecycle(body, d) {
+  const c = d.container;
+  const statusColor = {
+    inland:'blue', 'pre-gate':'yellow', 'gate-in':'yellow',
+    yard:'blue', loading:'green', 'on-vessel':'green',
+    'gate-out':'dim', delivered:'dim',
+  }[c.Status] || 'dim';
+
+  const steps = [
+    { label:'Inland leg', active:!!d.inlandLegs?.length, val: d.inlandLegs?.[0] ? `${d.inlandLegs[0].ModeOfTransport} · risk ${Math.round((d.inlandLegs[0].DelayRiskScore||0)*100)}%` : 'No inland leg', dot:'#44ccff' },
+    { label:'Hinterland ETA', active:!!d.hinterlandEtas?.length, val: d.hinterlandEtas?.[0] ? `ETA ${fmtDate(d.hinterlandEtas[0].EstimatedArrivalAt)} · conf ${Math.round((d.hinterlandEtas[0].ConfidenceScore||0)*100)}%` : 'No ETA', dot:'#ffb84c' },
+    { label:'Slot booking', active:!!d.slotBookings?.length, val: d.slotBookings?.[0] ? `${fmtDate(d.slotBookings[0].SlotWindowStart)} · ${d.slotBookings[0].Status}` : 'No slot', dot:'#64f0c8' },
+    { label:'Gate event', active:!!d.gateEvents?.length, val: d.gateEvents?.[0] ? `${fmtDate(d.gateEvents[0].Timestamp)} · ${d.gateEvents[0].PlateMatchResult} · ${d.gateEvents[0].ProcessingTimeSeconds}s` : 'Not yet at gate', dot:'#64f0c8' },
+    { label:'Handoff SLA', active:!!d.handoffSla, val: d.handoffSla ? `${d.handoffSla.ActualMinutes}min vs ${d.handoffSla.SlaTargetMinutes}min target ${d.handoffSla.SlaBreached?'⚠ BREACHED':'✓ OK'}` : 'No SLA recorded', dot: d.handoffSla?.SlaBreached ? '#ff5f63':'#64f0c8' },
+    { label:'Yard position', active:!!d.yardPositions?.length, val: d.yardPositions?.[0] ? `${d.yardPositions[0].Row}${d.yardPositions[0].Bay}-T${d.yardPositions[0].Tier} · ${d.yardPositions[0].Status}` : 'Not in yard', dot:'#44ccff' },
+    { label:'Customs triage', active:!!d.customsTriage, val: d.customsTriage ? `${d.customsTriage.RiskLevel} · ${d.customsTriage.ClearanceStatus} · ${d.customsTriage.InspectionType}` : 'No triage', dot: d.customsTriage?.RiskLevel==='GREEN'?'#64f0c8':d.customsTriage?.RiskLevel==='YELLOW'?'#ffb84c':'#ff5f63' },
+    { label:'Trade docs', active:!!d.tradeDocuments?.length, val: d.tradeDocuments?.length ? `${d.tradeDocuments.filter(x=>x.Status==='approved').length}/${d.tradeDocuments.length} approved` : 'No documents', dot:'#b388ff' },
+    { label:'Port visit', active:!!d.portVisit, val: d.portVisit ? `dwell ${d.portVisit.DwellHours?.toFixed(1)||0}h · ${d.portVisit.Status}` : 'No visit record', dot:'#64f0c8' },
+  ];
+
+  body.innerHTML = `
+    <div class="hd-section">
+      <div class="hd-section-head"><span>${c.IsoNumber}</span> <span class="cnt">${rb(c.ContainerType,'blue')} ${rb(c.Status,statusColor)}</span></div>
+      <div class="hd-row">
+        <span class="rk">Seal:</span> <span class="rv"> ${c.SealNumber}</span> &nbsp;
+        <span class="rk">Weight:</span> <span class="rv"> ${c.GrossWeightKg?.toLocaleString()}kg</span>
+        ${c.CurrentTempC!=null?`&nbsp;<span class="rk">Temp:</span> <span class="rv"> ${c.CurrentTempC}°C</span>`:''}
+      </div>
+      ${d.consignment?`<div class="hd-row"><span class="rk">HS Code:</span> <span class="rv"> ${d.consignment.HsCode}</span> ${d.consignment.EudrRequired?rb('EUDR','yellow'):''} ${d.consignment.TemperatureControlled?rb('REEFER','blue'):''}</div>`:''}
+      ${d.shipment?`<div class="hd-row"><span class="rk">B/L:</span> <span class="rv"> ${d.shipment.BillOfLading}</span> &nbsp; <span class="rk">${d.shipment.OriginCountry} → ${d.shipment.DestinationPort}</span> ${statusRb(d.shipment.Status)}</div>`:''}
+    </div>
+    <div class="hd-section">
+      <div class="hd-section-head"><span>Lifecycle chain</span></div>
+      <div class="lifecycle-grid">
+        ${steps.map(s=>`<div class="lc-step ${s.active?'active':''}">
+          <div class="lc-dot" style="background:${s.active?s.dot:'rgba(255,255,255,0.12)'}"></div>
+          <div class="lc-info">
+            <div class="lc-label">${s.label}</div>
+            <div class="lc-val">${s.val}</div>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeDrawer();
 });
 </script>
 </body>
