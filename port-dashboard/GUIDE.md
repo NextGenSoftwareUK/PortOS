@@ -1,5 +1,4 @@
 # Port OS Dashboard — Developer Guide
-### For Sohaib
 
 **Live URL:** https://portos-production-9f14.up.railway.app  
 **Source repo:** https://github.com/NextGenSoftwareUK/PortOS  
